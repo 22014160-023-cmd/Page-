@@ -6,140 +6,255 @@
 <title>Scientific Method & AI Tools – Assessment</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow-x: hidden; }
   body {
     font-family: 'Segoe UI', system-ui, sans-serif;
     background: linear-gradient(135deg, #1e3a8a 0%, #6d28d9 50%, #db2777 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 18s ease infinite;
     min-height: 100vh;
     display: flex;
     justify-content: center;
     padding: 40px 16px;
     color: #1f2937;
+    position: relative;
+    overflow-x: hidden;
+  }
+  @keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  #bubbleLayer {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 1; overflow: hidden;
+  }
+  .bubble {
+    position: absolute; bottom: -120px; border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%,
+      rgba(255,255,255,0.9),
+      rgba(255,255,255,0.25) 40%,
+      rgba(255,255,255,0.05) 70%);
+    border: 1px solid rgba(255,255,255,0.45);
+    box-shadow: inset -4px -4px 8px rgba(255,255,255,0.3),
+                0 0 20px rgba(255,255,255,0.25);
+    animation: rise linear forwards;
+    will-change: transform, opacity;
+  }
+  @keyframes rise {
+    0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+    10%  { opacity: 0.9; }
+    100% { transform: translateY(-115vh) translateX(var(--drift)) scale(1.05); opacity: 0; }
+  }
+  .bubble.pop { animation: pop 0.45s ease-out forwards; }
+  @keyframes pop {
+    0%   { transform: scale(1);   opacity: 0.9; }
+    40%  { transform: scale(1.5); opacity: 0.6; }
+    100% { transform: scale(0);   opacity: 0; }
   }
   .card {
-    background: #ffffff;
-    max-width: 760px;
-    width: 100%;
-    border-radius: 20px;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.35);
-    overflow: hidden;
+    position: relative; z-index: 2;
+    background: #ffffff; max-width: 760px; width: 100%;
+    border-radius: 20px; box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    overflow: hidden; animation: cardIn 0.7s ease-out;
+  }
+  @keyframes cardIn {
+    from { transform: translateY(30px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
   }
   .header {
     background: linear-gradient(135deg, #4f46e5, #9333ea);
-    color: #fff;
-    padding: 36px 40px;
+    color: #fff; padding: 36px 40px;
   }
   .header h1 { font-size: 26px; margin-bottom: 8px; }
   .header p { opacity: 0.9; font-size: 15px; line-height: 1.5; }
   form { padding: 32px 40px 40px; }
-  .field { margin-bottom: 22px; }
+  .field { margin-bottom: 22px; animation: fieldIn 0.6s ease-out backwards; }
+  .field:nth-child(1) { animation-delay: 0.1s; }
+  .field:nth-child(2) { animation-delay: 0.2s; }
+  .field:nth-child(3) { animation-delay: 0.3s; }
+  .field:nth-child(4) { animation-delay: 0.4s; }
+  .field:nth-child(5) { animation-delay: 0.5s; }
+  .field:nth-child(6) { animation-delay: 0.6s; }
+  .field:nth-child(7) { animation-delay: 0.7s; }
+  .field:nth-child(8) { animation-delay: 0.8s; }
+  @keyframes fieldIn {
+    from { transform: translateY(12px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
   label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 8px;
-    font-size: 14px;
-    color: #374151;
+    display: block; font-weight: 600; margin-bottom: 8px;
+    font-size: 14px; color: #374151;
   }
   label span { color: #9333ea; }
   input, textarea, select {
-    width: 100%;
-    padding: 12px 14px;
-    border: 2px solid #e5e7eb;
-    border-radius: 10px;
-    font-size: 15px;
-    font-family: inherit;
-    transition: all 0.2s;
-    background: #f9fafb;
+    width: 100%; padding: 12px 14px;
+    border: 2px solid #e5e7eb; border-radius: 10px;
+    font-size: 15px; font-family: inherit;
+    transition: all 0.2s; background: #f9fafb;
   }
   input:focus, textarea:focus, select:focus {
-    outline: none;
-    border-color: #9333ea;
-    background: #fff;
+    outline: none; border-color: #9333ea; background: #fff;
     box-shadow: 0 0 0 4px rgba(147,51,234,0.12);
   }
   textarea { resize: vertical; min-height: 90px; }
   button {
-    width: 100%;
-    padding: 16px;
+    width: 100%; padding: 16px;
     background: linear-gradient(135deg, #4f46e5, #9333ea);
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
+    color: #fff; border: none; border-radius: 12px;
+    font-size: 16px; font-weight: 700; cursor: pointer;
     transition: transform 0.15s, box-shadow 0.15s;
     margin-top: 8px;
   }
   button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(147,51,234,0.4); }
   button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
   .success {
-    display: none;
-    text-align: center;
-    padding: 40px;
-    color: #059669;
-    font-size: 18px;
-    font-weight: 600;
+    display: none; text-align: center; padding: 40px;
+    color: #059669; font-size: 18px; font-weight: 600;
   }
-  .success .check {
-    font-size: 60px;
-    display: block;
-    margin-bottom: 12px;
+  .success .check { font-size: 60px; display: block; margin-bottom: 12px; }
+  #soundToggle {
+    position: fixed; top: 16px; right: 16px; z-index: 10;
+    background: rgba(255,255,255,0.85); border: none;
+    width: 42px; height: 42px; border-radius: 50%;
+    font-size: 18px; cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+  }
+  #soundToggle:hover { transform: scale(1.1); }
+  @media (max-width: 600px) {
+    .header { padding: 28px 22px; }
+    .header h1 { font-size: 22px; }
+    form { padding: 22px; }
   }
 </style>
 </head>
 <body>
-  <div class="card">
-    <div class="header">
-      <h1>🔬 Scientific Method & AI Tools Assessment</h1>
-      <p>Please answer thoughtfully. Your responses will be used for justification and evaluation of your research approach.</p>
-    </div>
 
-    <form id="assessmentForm">
-      <!-- Web3Forms required fields -->
-      <input type="hidden" name="access_key" value="36579690-c4ad-499a-82c7-34ef6dae066e" />
-      <input type="hidden" name="subject" value="New Assessment Response" />
-      <input type="hidden" name="from_name" value="Scientific Method Assessment" />
+<button id="soundToggle" title="Toggle sound">🔊</button>
+<div id="bubbleLayer"></div>
 
-      <div class="field">
-        <label>Full Name <span>*</span></label>
-        <input type="text" name="name" required placeholder="Your full name" />
-      </div>
-
-      <div class="field">
-        <label>Research Question You Are Addressing <span>*</span></label>
-        <textarea name="research_question" required placeholder="State your scientific question clearly..."></textarea>
-      </div>
-
-      <div class="field">
-        <label>How You Used AI / Google Tools <span>*</span></label>
-        <textarea name="ai_tools" required placeholder="Which tools (Google, AI assistants, etc.) and how did they help?"></textarea>
-      </div>
-
-      <div class="field">
-        <label>Scientific Method Steps Applied <span>*</span></label>
-        <textarea name="scientific_method" required placeholder="Observation → Hypothesis → Experiment → Analysis → Conclusion..."></textarea>
-      </div>
-
-      <div class="field">
-        <label>Justification / Reasoning <span>*</span></label>
-        <textarea name="justification" required placeholder="Why did you choose this approach? Support your reasoning."></textarea>
-      </div>
-
-      <div class="field">
-        <label>References / Links (optional)</label>
-        <textarea name="references" placeholder="Any sources, papers, or links used..."></textarea>
-      </div>
-
-      <button type="submit" id="submitBtn">Submit Response</button>
-    </form>
-
-    <div class="success" id="successMsg">
-      <span class="check">✅</span>
-      Thank you! Your response has been submitted successfully.
-    </div>
+<div class="card">
+  <div class="header">
+    <h1>🔬 Scientific Method & AI Tools Assessment</h1>
+    <p>Please answer thoughtfully. Your responses will be used for justification and evaluation of your research approach.</p>
   </div>
 
+  <form id="assessmentForm">
+    <input type="hidden" name="access_key" value="36579690-c4ad-499a-82c7-34ef6dae066e" />
+    <input type="hidden" name="subject" value="New Assessment Response" />
+    <input type="hidden" name="from_name" value="Scientific Method Assessment" />
+
+    <div class="field">
+      <label>Full Name <span>*</span></label>
+      <input type="text" name="name" required placeholder="Your full name" />
+    </div>
+    <div class="field">
+      <label>Research Question You Are Addressing <span>*</span></label>
+      <textarea name="research_question" required placeholder="State your scientific question clearly..."></textarea>
+    </div>
+    <div class="field">
+      <label>How You Used AI / Google Tools <span>*</span></label>
+      <textarea name="ai_tools" required placeholder="Which tools (Google, AI assistants, etc.) and how did they help?"></textarea>
+    </div>
+    <div class="field">
+      <label>Scientific Method Steps Applied <span>*</span></label>
+      <textarea name="scientific_method" required placeholder="Observation → Hypothesis → Experiment → Analysis → Conclusion..."></textarea>
+    </div>
+    <div class="field">
+      <label>Justification / Reasoning <span>*</span></label>
+      <textarea name="justification" required placeholder="Why did you choose this approach? Support your reasoning."></textarea>
+    </div>
+    <div class="field">
+      <label>References / Links (optional)</label>
+      <textarea name="references" placeholder="Any sources, papers, or links used..."></textarea>
+    </div>
+    <button type="submit" id="submitBtn">Submit Response</button>
+  </form>
+
+  <div class="success" id="successMsg">
+    <span class="check">✅</span>
+    Thank you! Your response has been submitted successfully.
+  </div>
+</div>
+
 <script>
+  const layer = document.getElementById('bubbleLayer');
+  let soundEnabled = true;
+
+  let audioCtx = null;
+  function getAudioCtx() {
+    if (!audioCtx) {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (Ctx) audioCtx = new Ctx();
+    }
+    return audioCtx;
+  }
+
+  function playPop(sizeRatio) {
+    if (!soundEnabled) return;
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    if (ctx.state === 'suspended') ctx.resume();
+
+    const baseFreq = 900 - sizeRatio * 500;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(baseFreq, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(baseFreq * 2.2, ctx.currentTime + 0.06);
+
+    filter.type = 'bandpass';
+    filter.frequency.value = baseFreq * 1.5;
+    filter.Q.value = 8;
+
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.18);
+
+    osc.connect(filter).connect(gain).connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.22);
+  }
+
+  function spawnBubble() {
+    const b = document.createElement('div');
+    b.className = 'bubble';
+
+    const size = 18 + Math.random() * 70;
+    const duration = 6 + Math.random() * 6;
+    const startX = Math.random() * 100;
+    const drift = (Math.random() - 0.5) * 120;
+
+    b.style.width = size + 'px';
+    b.style.height = size + 'px';
+    b.style.left = startX + 'vw';
+    b.style.setProperty('--drift', drift + 'px');
+    b.style.animationDuration = duration + 's';
+
+    const popAt = (0.65 + Math.random() * 0.3) * duration * 1000;
+    setTimeout(() => {
+      if (!b.parentNode) return;
+      b.classList.add('pop');
+      playPop(size / 88);
+      setTimeout(() => b.remove(), 500);
+    }, popAt);
+
+    layer.appendChild(b);
+    setTimeout(() => b.remove(), duration * 1000 + 800);
+  }
+
+  setInterval(spawnBubble, 380);
+  for (let i = 0; i < 6; i++) setTimeout(spawnBubble, i * 180);
+
+  const soundToggle = document.getElementById('soundToggle');
+  soundToggle.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+  });
+
   const form = document.getElementById('assessmentForm');
   const btn = document.getElementById('submitBtn');
   const success = document.getElementById('successMsg');
@@ -148,7 +263,6 @@
     e.preventDefault();
     btn.disabled = true;
     btn.textContent = 'Submitting...';
-
     const data = new FormData(form);
 
     try {
@@ -157,12 +271,12 @@
         body: data,
         headers: { 'Accept': 'application/json' }
       });
-
       const result = await res.json();
 
       if (result.success) {
         form.style.display = 'none';
         success.style.display = 'block';
+        for (let i = 0; i < 20; i++) setTimeout(spawnBubble, i * 60);
       } else {
         alert('Error: ' + (result.message || 'Something went wrong.'));
         btn.disabled = false;
@@ -174,7 +288,15 @@
       btn.textContent = 'Submit Response';
     }
   });
+
+  document.addEventListener('touchstart', () => {
+    const ctx = getAudioCtx();
+    if (ctx && ctx.state === 'suspended') ctx.resume();
+  }, { once: true });
+  document.addEventListener('click', () => {
+    const ctx = getAudioCtx();
+    if (ctx && ctx.state === 'suspended') ctx.resume();
+  }, { once: true });
 </script>
 </body>
 </html>
-<!-- rebuild trigger -->
