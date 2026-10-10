@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Scientific Method & AI Tools – Assessment</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: linear-gradient(135deg, #1e3a8a 0%, #6d28d9 50%, #db2777 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 40px 16px;
+    color: #1f2937;
+  }
+  .card {
+    background: #ffffff;
+    max-width: 760px;
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    overflow: hidden;
+  }
+  .header {
+    background: linear-gradient(135deg, #4f46e5, #9333ea);
+    color: #fff;
+    padding: 36px 40px;
+  }
+  .header h1 { font-size: 26px; margin-bottom: 8px; }
+  .header p { opacity: 0.9; font-size: 15px; line-height: 1.5; }
+  form { padding: 32px 40px 40px; }
+  .field { margin-bottom: 22px; }
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #374151;
+  }
+  label span { color: #9333ea; }
+  input, textarea, select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+    transition: all 0.2s;
+    background: #f9fafb;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #9333ea;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(147,51,234,0.12);
+  }
+  textarea { resize: vertical; min-height: 90px; }
+  button {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #4f46e5, #9333ea);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-top: 8px;
+  }
+  button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(147,51,234,0.4); }
+  button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .success {
+    display: none;
+    text-align: center;
+    padding: 40px;
+    color: #059669;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .success .check {
+    font-size: 60px;
+    display: block;
+    margin-bottom: 12px;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <h1>🔬 Scientific Method & AI Tools Assessment</h1>
+      <p>Please answer thoughtfully. Your responses will be used for justification and evaluation of your research approach.</p>
+    </div>
+
+    <form id="assessmentForm">
+      <!-- Web3Forms required fields -->
+      <input type="hidden" name="access_key" value="36579690-c4ad-499a-82c7-34ef6dae066e" />
+      <input type="hidden" name="subject" value="New Assessment Response" />
+      <input type="hidden" name="from_name" value="Scientific Method Assessment" />
+
+      <div class="field">
+        <label>Full Name <span>*</span></label>
+        <input type="text" name="name" required placeholder="Your full name" />
+      </div>
+
+      <div class="field">
+        <label>Research Question You Are Addressing <span>*</span></label>
+        <textarea name="research_question" required placeholder="State your scientific question clearly..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>How You Used AI / Google Tools <span>*</span></label>
+        <textarea name="ai_tools" required placeholder="Which tools (Google, AI assistants, etc.) and how did they help?"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Scientific Method Steps Applied <span>*</span></label>
+        <textarea name="scientific_method" required placeholder="Observation → Hypothesis → Experiment → Analysis → Conclusion..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Justification / Reasoning <span>*</span></label>
+        <textarea name="justification" required placeholder="Why did you choose this approach? Support your reasoning."></textarea>
+      </div>
+
+      <div class="field">
+        <label>References / Links (optional)</label>
+        <textarea name="references" placeholder="Any sources, papers, or links used..."></textarea>
+      </div>
+
+      <button type="submit" id="submitBtn">Submit Response</button>
+    </form>
+
+    <div class="success" id="successMsg">
+      <span class="check">✅</span>
+      Thank you! Your response has been submitted successfully.
+    </div>
+  </div>
+
+<script>
+  const form = document.getElementById('assessmentForm');
+  const btn = document.getElementById('submitBtn');
+  const success = document.getElementById('successMsg');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+
+    const data = new FormData(form);
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        form.style.display = 'none';
+        success.style.display = 'block';
+      } else {
+        alert('Error: ' + (result.message || 'Something went wrong.'));
+        btn.disabled = false;
+        btn.textContent = 'Submit Response';
+      }
+    } catch (err) {
+      alert('Network error. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Submit Response';
+    }
+  });
+</script>
+</body>
+</html>
