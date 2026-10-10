@@ -216,6 +216,10 @@
   </div>
 
   <form id="assessmentForm">
+    <input type="hidden" name="access_key" value="8573e077-b3a0-4f04-8de3-0c9d28ba0d30" />
+    <input type="hidden" name="subject" value="New Assessment Response" />
+    <input type="hidden" name="from_name" value="Scientific Method Assessment" />
+
     <div class="field"><label>Full Name <span>*</span></label>
       <input type="text" name="name" required placeholder="Your full name" /></div>
     <div class="field"><label>Research Question You Are Addressing <span>*</span></label>
@@ -319,8 +323,6 @@
       ((e.clientY - r.top) / r.height) * 100 + '%');
   });
 
-  const PROXY_URL = 'https://YOUR-PROXY.vercel.app/api/submit';
-
   const form = document.getElementById('assessmentForm');
   const btn = document.getElementById('submitBtn');
   const success = document.getElementById('successMsg');
@@ -330,27 +332,21 @@
     btn.disabled = true;
     btn.textContent = 'Submitting...';
     const data = new FormData(form);
-    const payload = {
-      name:              data.get('name'),
-      research_question: data.get('research_question'),
-      ai_tools:          data.get('ai_tools'),
-      scientific_method: data.get('scientific_method'),
-      justification:     data.get('justification'),
-      references:        data.get('references')
-    };
+
     try {
-      const res = await fetch(PROXY_URL, {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: data,
+        headers: { 'Accept': 'application/json' }
       });
       const result = await res.json();
-      if (res.ok && result.success) {
+
+      if (result.success) {
         form.style.display = 'none';
         success.style.display = 'block';
         for (let i = 0; i < 20; i++) setTimeout(spawnBubble, i * 60);
       } else {
-        alert('Error: ' + (result.error || 'Submission failed.'));
+        alert('Error: ' + (result.message || 'Something went wrong.'));
         btn.disabled = false;
         btn.textContent = 'Submit Response';
       }
